@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 84">
+  <!-- Bottom layer - 3D base -->
+  <path d="M12 62 L32 50 L52 62 L32 74Z" fill="#1a1a1a"/>
+  <path d="M12 62 L32 74 L32 80 L12 68Z" fill="#e8713a"/>
+  <path d="M32 74 L52 62 L52 68 L32 80Z" fill="#1a1a1a"/>
+
+  <!-- Middle layer - orange diamond -->
+  <path d="M12 44 L32 32 L52 44 L32 56Z" fill="#e8713a"/>
+
+  <!-- Top layer - wireframe diamond -->
+  <path d="M12 26 L32 14 L52 26 L32 38Z" fill="none" stroke="#1a1a1a" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M22 26 L32 20 L42 26 L32 32Z" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Sparkle -->
+  <path d="M47 2l1.2 4.3 4.3 1.2-4.3 1.2L47 13l-1.2-4.3L42.5 7.2l4.3-1.2Z" fill="#1a1a1a"/>
+</svg>

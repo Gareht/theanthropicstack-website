@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Anthropic Stack — What actually works in AI development</title>
+  <meta name="description" content="The weekly newsletter for professionals who build with Claude Code, MCP and the Anthropic ecosystem. No hype. No listicles. Just what ships.">
+  <meta property="og:title" content="The Anthropic Stack">
+  <meta property="og:description" content="What actually works in AI development. Weekly.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       RESET & BASE
+       ============================================ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg-card: #111111;
+      --border: #1a1a1a;
+      --accent: #e8713a;
+      --accent-glow: rgba(232, 113, 58, 0.4);
+      --text: #f5f5f5;
+      --text-muted: #888888;
+      --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Geist Mono', monospace;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ============================================
+       DOT GRID BACKGROUND (mouse-tracking)
+       ============================================ */
+    #dot-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      background-image: radial-gradient(circle, #222 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.3;
+    }
+
+    #dot-grid::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(232, 113, 58, 0.06), transparent 60%);
+      transition: background 0.15s;
+    }
+
+    /* ============================================
+       LAYOUT
+       ============================================ */
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================
+       NAV
+       ============================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: background 0.3s, backdrop-filter 0.3s;
+    }
+
+    nav.scrolled {
+      background: rgba(10, 10, 10, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .nav-icon {
+      width: auto;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .nav-subscribe {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .nav-subscribe:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    /* ============================================
+       HERO
+       ============================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 20%, rgba(232, 113, 58, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 30% 80%, rgba(30, 40, 80, 0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(42px, 7vw, 84px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      text-wrap: balance;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    .hero h1 .word {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .hero h1 .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: charReveal 0.4s forwards;
+    }
+
+    .hero h1 .actually {
+      color: var(--accent);
+      position: relative;
+    }
+
+    .hero h1 .actually .char {
+      color: var(--accent);
+    }
+
+    .hero h1 .actually::after {
+      content: '';
+      position: absolute;
+      inset: -4px -8px;
+      border-radius: 8px;
+      background: rgba(232, 113, 58, 0.12);
+      animation: glowPulse 3s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes charReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { background: rgba(232, 113, 58, 0.08); box-shadow: 0 0 30px rgba(232, 113, 58, 0.1); }
+      50% { background: rgba(232, 113, 58, 0.18); box-shadow: 0 0 50px rgba(232, 113, 58, 0.2); }
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       SUBSCRIBE FORM
+       ============================================ */
+    .subscribe-form {
+      display: flex;
+      gap: 0;
+      max-width: 480px;
+      margin: 0 auto 24px;
+      position: relative;
+    }
+
+    .subscribe-form input[type="email"] {
+      flex: 1;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-right: none;
+      border-radius: 12px 0 0 12px;
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .subscribe-form input[type="email"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow), inset 0 0 0 1px var(--accent);
+    }
+
+    .subscribe-form input[type="email"]::placeholder {
+      color: #555;
+    }
+
+    .subscribe-form button {
+      padding: 16px 28px;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      border-radius: 0 12px 12px 0;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.2s;
+      animation: subtlePulse 4s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .subscribe-form button:hover {
+      background: #d4622e;
+      animation: none;
+    }
+
+    .subscribe-form button.success {
+      background: #22c55e;
+      animation: none;
+    }
+
+    .subscribe-form button .checkmark {
+      display: none;
+    }
+
+    .subscribe-form button.success .btn-text {
+      display: none;
+    }
+
+    .subscribe-form button.success .checkmark {
+      display: inline-block;
+    }
+
+    @keyframes subtlePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(232, 113, 58, 0); }
+      50% { box-shadow: 0 0 20px 2px rgba(232, 113, 58, 0.3); }
+    }
+
+    .checkmark-svg {
+      width: 24px;
+      height: 24px;
+      vertical-align: middle;
+    }
+
+    .checkmark-svg path {
+      stroke-dasharray: 30;
+      stroke-dashoffset: 30;
+      animation: drawCheck 0.4s 0.1s forwards ease-out;
+    }
+
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .hero-proof {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .avatar-stack {
+      display: flex;
+    }
+
+    .avatar-stack span {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      margin-left: -8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .avatar-stack span:first-child { margin-left: 0; }
+    .avatar-stack span:nth-child(1) { background: #2563eb; color: #fff; }
+    .avatar-stack span:nth-child(2) { background: #7c3aed; color: #fff; }
+    .avatar-stack span:nth-child(3) { background: #059669; color: #fff; }
+    .avatar-stack span:nth-child(4) { background: #dc2626; color: #fff; }
+    .avatar-stack span:nth-child(5) { background: var(--accent); color: #fff; }
+
+    /* ============================================
+       TERMINAL SECTION
+       ============================================ */
+    .terminal-section {
+      padding: 40px 0 100px;
+    }
+
+    .terminal-window {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #0d0d0d;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      background: #151515;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #ff5f57; }
+    .terminal-dot.yellow { background: #febc2e; }
+    .terminal-dot.green { background: #28c840; }
+
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-right: 44px;
+    }
+
+    .terminal-body {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 2;
+      min-height: 220px;
+    }
+
+    .terminal-line {
+      opacity: 0;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .terminal-line.visible {
+      opacity: 1;
+    }
+
+    .terminal-line .prompt {
+      color: var(--accent);
+    }
+
+    .terminal-line .cmd {
+      color: var(--text);
+    }
+
+    .terminal-line .bracket {
+      color: #666;
+    }
+
+    .terminal-line .info {
+      color: var(--text-muted);
+    }
+
+    .terminal-line .success {
+      color: #22c55e;
+    }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background: var(--accent);
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .terminal-caption {
+      text-align: center;
+      margin-top: 24px;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* ============================================
+       SECTION REVEAL ANIMATIONS
+       ============================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-child {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-child.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================
+       WHAT YOU GET (CARDS)
+       ============================================ */
+    .features-section {
+      padding: 100px 0;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    .section-heading {
+      font-family: var(--font-serif);
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 60px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 28px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+      transform-style: preserve-3d;
+      perspective: 800px;
+    }
+
+    .card:hover {
+      transform: translateY(-4px) rotateX(2deg) rotateY(-2deg);
+      box-shadow: 0 0 0 1px rgba(232, 113, 58, 0.2), 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(232, 113, 58, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .card h3 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       STATS SECTION
+       ============================================ */
+    .stats-section {
+      padding: 100px 0;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+    }
+
+    .stat-item {
+      padding: 40px 0;
+    }
+
+    .stat-number {
+      font-family: var(--font-mono);
+      font-size: clamp(48px, 8vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .stat-number .accent {
+      color: var(--accent);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 240px;
+      margin: 0 auto;
+    }
+
+    /* ============================================
+       SAMPLE ISSUE PREVIEW
+       ============================================ */
+    .preview-section {
+      padding: 100px 0;
+      overflow: hidden;
+    }
+
+    .preview-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+
+    .preview-text {
+      flex: 1;
+    }
+
+    .preview-mockup {
+      flex: 1;
+    }
+
+    .mockup-frame {
+      background: #151515;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transform: rotate(2deg);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mockup-frame:hover {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    .mockup-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #1a1a1a;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mockup-bar .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mockup-bar .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #333;
+    }
+
+    .mockup-bar .url {
+      flex: 1;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #555;
+    }
+
+    .mockup-content {
+      padding: 32px 28px;
+    }
+
+    .mockup-issue-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .mockup-issue-title {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+      line-height: 1.25;
+    }
+
+    .mockup-issue-section {
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .mockup-issue-section h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .mockup-issue-section p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+
+    /* ============================================
+       AUTHOR SECTION
+       ============================================ */
+    .author-section {
+      padding: 100px 0;
+    }
+
+    .author-card {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .author-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #c05a2a);
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .author-card blockquote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(18px, 2.5vw, 24px);
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 24px;
+      font-weight: 400;
+    }
+
+    .author-name {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .author-title {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .author-link {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    /* ============================================
+       FINAL CTA
+       ============================================ */
+    .cta-section {
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(232, 113, 58, 0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-heading {
+      font-family: var(--font-serif);
+      font-size: clamp(38px, 6vw, 68px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+      line-height: 1.1;
+    }
+
+    .cta-sub {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-top: 20px;
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-left {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .footer-center {
+      font-size: 13px;
+      color: #444;
+      font-family: var(--font-mono);
+    }
+
+    .footer-right {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-right a {
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .footer-right a:hover {
+      color: var(--text);
+    }
+
+    .footer-right svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* ============================================
+       FORM ERROR
+       ============================================ */
+    .form-error {
+      color: #ef4444;
+      font-size: 13px;
+      margin-top: 8px;
+      text-align: center;
+      display: none;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 768px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .stat-item {
+        padding: 24px 0;
+      }
+
+      .preview-wrapper {
+        flex-direction: column;
+        gap: 40px;
+      }
+
+      .preview-mockup {
+        width: 100%;
+      }
+
+      .mockup-frame {
+        transform: rotate(0deg);
+      }
+
+      .subscribe-form {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .subscribe-form input[type="email"] {
+        border-radius: 12px;
+        border-right: 1px solid var(--border);
+      }
+
+      .subscribe-form button {
+        border-radius: 12px;
+        padding: 16px;
+      }
+
+      .hero {
+        padding: 100px 0 60px;
+        min-height: auto;
+      }
+
+      nav .nav-logo {
+        font-size: 16px;
+      }
+
+      .terminal-body {
+        font-size: 12px;
+        padding: 16px;
+      }
+
+      .hero-proof {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      footer .container {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .section-heading {
+        font-size: 24px;
+      }
+
+      .cta-heading {
+        font-size: 28px;
+      }
+
+      .stat-number {
+        font-size: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dot grid background -->
+  <div id="dot-grid"></div>
+
+  <!-- ========== NAV ========== -->
+  <nav>
+    <div class="container">
+      <div class="nav-logo">
+        <svg class="nav-icon" viewBox="0 0 64 84" fill="none" aria-hidden="true">
+          <path d="M12 62 L32 50 L52 62 L32 74Z" fill="currentColor"/>
+          <path d="M12 62 L32 74 L32 80 L12 68Z" fill="#e8713a"/>
+          <path d="M32 74 L52 62 L52 68 L32 80Z" fill="currentColor"/>
+          <path d="M12 44 L32 32 L52 44 L32 56Z" fill="#e8713a"/>
+          <path d="M12 26 L32 14 L52 26 L32 38Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M22 26 L32 20 L42 26 L32 32Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M47 2l1.2 4.3 4.3 1.2-4.3 1.2L47 13l-1.2-4.3-4.3-1.2 4.3-1.2Z" fill="currentColor"/>
+        </svg>
+        The Anthropic Stack
+      </div>
+      <a href="#subscribe" class="nav-subscribe">Subscribe</a>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="subscribe">
+    <div class="hero-bg"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 id="hero-headline"></h1>
+        <p class="hero-sub">The weekly newsletter for professionals who build with Claude Code, MCP and the Anthropic ecosystem. No hype. No listicles. Just what ships.</p>
+        <form class="subscribe-form" id="subscribe-form-hero" data-form="hero">
+          <input type="email" placeholder="you@company.com" required autocomplete="email" aria-label="Email address">
+          <button type="submit">
+            <span class="btn-text">Subscribe — it is free</span>
+            <span class="checkmark">
+              <svg class="checkmark-svg" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3">
+                <path d="M4 12l6 6L20 6"/>
+              </svg>
+            </span>
+          </button>
+        </form>
+        <div class="form-error" id="error-hero"></div>
+        <div class="hero-proof">
+          <div class="avatar-stack">
+            <span>G</span><span>A</span><span>M</span><span>J</span><span>S</span>
+          </div>
+          <span>Join 500+ developers who build with the Anthropic stack</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TERMINAL ========== -->
+  <section class="terminal-section">
+    <div class="container">
+      <div class="terminal-window reveal" id="terminal">
+        <div class="terminal-header">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <div class="terminal-title">pipeline — zsh</div>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+          <div class="terminal-line" data-line="0"><span class="prompt">$ </span><span class="cmd" data-text="python -m pipeline.run full"></span><span class="terminal-cursor"></span></div>
+          <div class="terminal-line" data-line="1"><span class="bracket">[collect]</span> <span class="info" data-text="47 items from 8 sources..."></span></div>
+          <div class="terminal-line" data-line="2"><span class="bracket">[score]</span> <span class="info" data-text="12 items above threshold..."></span></div>
+          <div class="terminal-line" data-line="3"><span class="bracket">[draft]</span> <span class="info" data-text="generating issue #4..."></span></div>
+          <div class="terminal-line" data-line="4"><span class="bracket">[publish]</span> <span class="success" data-text="draft created on Substack ✓"></span></div>
+        </div>
+      </div>
+      <p class="terminal-caption reveal">Fully automated. Human edited. Published every Tuesday.</p>
+    </div>
+  </section>
+
+  <!-- ========== WHAT YOU GET ========== -->
+  <section class="features-section">
+    <div class="container">
+      <div class="reveal">
+        <p class="section-label">What you get</p>
+        <h2 class="section-heading">Three things. Every Tuesday.</h2>
+      </div>
+      <div class="cards-grid">
+        <div class="card reveal-child">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+          <h3>The Lead</h3>
+          <p>One original insight per week. Opinionated, specific, grounded in what we ship.</p>
+        </div>
+        <div class="card reveal-child">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          </div>
+          <h3>The Stack This Week</h3>
+          <p>3 to 5 curated developments from the Claude and MCP ecosystem. Context, not just links.</p>
+        </div>
+        <div class="card reveal-child">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+          </div>
+          <h3>Server of the Week</h3>
+          <p>Deep dive on one MCP server. Install commands, real use cases, honest verdict.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STATS ========== -->
+  <section class="stats-section">
+    <div class="container reveal">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" data-target="97" data-suffix="M+">0</div>
+          <p class="stat-label">MCP SDK monthly downloads across the ecosystem</p>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-prefix="$" data-target="1" data-suffix="B+">0</div>
+          <p class="stat-label">Claude Code annual run rate</p>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" data-target="1" data-suffix="">0</div>
+          <p class="stat-label">Newsletter covering this space with depth. This one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PREVIEW ========== -->
+  <section class="preview-section">
+    <div class="container">
+      <div class="preview-wrapper">
+        <div class="preview-text reveal">
+          <p class="section-label">Inside the issue</p>
+          <h2 class="section-heading">Read like a briefing.<br>Not a blog.</h2>
+          <p style="color: var(--text-muted); font-size: 16px; line-height: 1.7; max-width: 440px;">Every issue is structured for scanning. Lead insight at the top, curated stack in the middle, deep dive at the end. Five minutes, maximum. No padding.</p>
+        </div>
+        <div class="preview-mockup reveal-child">
+          <div class="mockup-frame">
+            <div class="mockup-bar">
+              <div class="dots"><span></span><span></span><span></span></div>
+              <div class="url">theanthropicstack.substack.com</div>
+            </div>
+            <div class="mockup-content">
+              <div class="mockup-issue-label">Issue #4 — 11 March 2026</div>
+              <div class="mockup-issue-title">Claude Code just became<br>a platform</div>
+              <div class="mockup-issue-section">
+                <h4>The Lead</h4>
+                <p>Sub agents, custom skills and hooks turn Claude Code from an assistant into an extensible development platform. Here is why that matters for how we build.</p>
+              </div>
+              <div class="mockup-issue-section">
+                <h4>The Stack This Week</h4>
+                <p>Anthropic ships Claude 4.5 Haiku to API. MCP spec hits v2025-03-26. Context7 crosses 15k GitHub stars...</p>
+              </div>
+              <div class="mockup-issue-section">
+                <h4>Server of the Week</h4>
+                <p>Playwright MCP: browser automation that actually works. Setup, real workflows, sharp edges.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== AUTHOR ========== -->
+  <section class="author-section">
+    <div class="container">
+      <div class="author-card reveal">
+        <div class="author-avatar">G</div>
+        <blockquote>Written by Gareth, founder of North Roots AI. We build production software with Claude Code and MCP every day for clients across the UK. This is what we have learned by doing.</blockquote>
+        <p class="author-name">Gareth</p>
+        <p class="author-title">Founder, North Roots AI</p>
+        <a href="https://northroots.ai" class="author-link" target="_blank" rel="noopener">northroots.ai</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FINAL CTA ========== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="reveal">
+        <h2 class="cta-heading">Stop scrolling.<br>Start building.</h2>
+        <form class="subscribe-form" id="subscribe-form-cta" data-form="cta">
+          <input type="email" placeholder="you@company.com" required autocomplete="email" aria-label="Email address">
+          <button type="submit">
+            <span class="btn-text">Subscribe — it is free</span>
+            <span class="checkmark">
+              <svg class="checkmark-svg" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3">
+                <path d="M4 12l6 6L20 6"/>
+              </svg>
+            </span>
+          </button>
+        </form>
+        <div class="form-error" id="error-cta"></div>
+        <p class="cta-sub">Published every Tuesday at 07:30 GMT. Unsubscribe anytime.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="container">
+      <div class="footer-left">&copy; 2026 The Anthropic Stack</div>
+      <div class="footer-center">Built with Claude Code, obviously.</div>
+      <div class="footer-right">
+        <a href="https://theanthropicstack.substack.com" target="_blank" rel="noopener" aria-label="Substack">
+          <svg viewBox="0 0 24 24"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+        </a>
+        <a href="https://x.com/theanthrostack" target="_blank" rel="noopener" aria-label="X / Twitter">
+          <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ===========================================
+       HERO HEADLINE — STAGGERED CHARACTER REVEAL
+       =========================================== */
+    (function initHeroHeadline() {
+      var el = document.getElementById('hero-headline');
+      // Each entry is a word (wrapped in .word so it never breaks mid-word).
+      // Spaces are inserted as plain text nodes between words.
+      var tokens = [
+        { text: 'What', cls: '' },
+        { text: 'actually', cls: 'actually' },
+        { text: 'works', cls: '' },
+        { text: 'in', cls: '' },
+        { text: 'AI', cls: '' },
+        { text: 'development.', cls: '' }
+      ];
+
+      var charIndex = 0;
+      tokens.forEach(function(token, ti) {
+        // Add a space between words (as a regular text node so it can line-break)
+        if (ti > 0) {
+          el.appendChild(document.createTextNode(' '));
+        }
+
+        // Outer wrapper: .word (+ optional class like .actually)
+        var wordSpan = document.createElement('span');
+        wordSpan.className = 'word' + (token.cls ? ' ' + token.cls : '');
+
+        for (var i = 0; i < token.text.length; i++) {
+          var c = document.createElement('span');
+          c.className = 'char';
+          c.textContent = token.text[i];
+          c.style.animationDelay = (charIndex * 30) + 'ms';
+          wordSpan.appendChild(c);
+          charIndex++;
+        }
+
+        el.appendChild(wordSpan);
+      });
+    })();
+
+    /* ===========================================
+       DOT GRID — MOUSE TRACKING
+       =========================================== */
+    (function initDotGrid() {
+      var grid = document.getElementById('dot-grid');
+      var ticking = false;
+
+      document.addEventListener('mousemove', function(e) {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            grid.style.setProperty('--mouse-x', e.clientX + 'px');
+            grid.style.setProperty('--mouse-y', e.clientY + 'px');
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+    })();
+
+    /* ===========================================
+       NAV — SCROLL STATE
+       =========================================== */
+    (function initNav() {
+      var nav = document.querySelector('nav');
+      var scrolled = false;
+
+      window.addEventListener('scroll', function() {
+        var shouldBeScrolled = window.scrollY > 40;
+        if (shouldBeScrolled !== scrolled) {
+          scrolled = shouldBeScrolled;
+          nav.classList.toggle('scrolled', scrolled);
+        }
+      }, { passive: true });
+    })();
+
+    /* ===========================================
+       SCROLL REVEAL — INTERSECTION OBSERVER
+       =========================================== */
+    (function initReveal() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+
+            // Stagger children
+            var children = entry.target.parentElement
+              ? entry.target.parentElement.querySelectorAll('.reveal-child')
+              : [];
+            if (entry.target.classList.contains('reveal')) {
+              var siblings = entry.target.closest('section')
+                ? entry.target.closest('section').querySelectorAll('.reveal-child')
+                : [];
+              siblings.forEach(function(child, i) {
+                setTimeout(function() {
+                  child.classList.add('visible');
+                }, i * 120);
+              });
+            }
+
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.reveal, .reveal-child').forEach(function(el) {
+        observer.observe(el);
+      });
+    })();
+
+    /* ===========================================
+       TERMINAL — TYPING ANIMATION
+       =========================================== */
+    (function initTerminal() {
+      var terminalEl = document.getElementById('terminal');
+      var lines = document.querySelectorAll('.terminal-line');
+      var started = false;
+
+      var observer = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !started) {
+          started = true;
+          runTerminal();
+          observer.unobserve(terminalEl);
+        }
+      }, { threshold: 0.3 });
+
+      observer.observe(terminalEl);
+
+      function typeLine(lineEl, cb) {
+        lineEl.classList.add('visible');
+        var textEl = lineEl.querySelector('[data-text]');
+        if (!textEl) { cb(); return; }
+        var fullText = textEl.getAttribute('data-text');
+        var idx = 0;
+
+        // Move cursor to this line
+        var allCursors = document.querySelectorAll('.terminal-cursor');
+        allCursors.forEach(function(c) { c.style.display = 'none'; });
+
+        var cursor = lineEl.querySelector('.terminal-cursor');
+        if (!cursor) {
+          cursor = document.createElement('span');
+          cursor.className = 'terminal-cursor';
+          textEl.after(cursor);
+        }
+        cursor.style.display = 'inline-block';
+
+        function typeChar() {
+          if (idx < fullText.length) {
+            textEl.textContent = fullText.substring(0, idx + 1);
+            idx++;
+            setTimeout(typeChar, 25 + Math.random() * 25);
+          } else {
+            setTimeout(cb, 300);
+          }
+        }
+
+        typeChar();
+      }
+
+      function runTerminal() {
+        var i = 0;
+        function next() {
+          if (i < lines.length) {
+            typeLine(lines[i], function() {
+              // Hide cursor on completed line (except last)
+              if (i < lines.length - 1) {
+                var c = lines[i].querySelector('.terminal-cursor');
+                if (c) c.style.display = 'none';
+              }
+              i++;
+              setTimeout(next, 200);
+            });
+          }
+        }
+        next();
+      }
+    })();
+
+    /* ===========================================
+       STATS — COUNTING ANIMATION
+       =========================================== */
+    (function initStats() {
+      var counters = document.querySelectorAll('.stat-number');
+      var started = false;
+
+      var observer = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !started) {
+          started = true;
+          counters.forEach(function(counter) { animateCounter(counter); });
+          observer.unobserve(entries[0].target);
+        }
+      }, { threshold: 0.3 });
+
+      if (counters.length) {
+        observer.observe(counters[0].closest('.stats-grid'));
+      }
+
+      function animateCounter(el) {
+        var target = parseInt(el.getAttribute('data-target'), 10);
+        var prefix = el.getAttribute('data-prefix') || '';
+        var suffix = el.getAttribute('data-suffix') || '';
+        var duration = 2000;
+        var start = performance.now();
+
+        function update(now) {
+          var progress = Math.min((now - start) / duration, 1);
+          // Ease out cubic
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var current = Math.round(eased * target);
+          el.textContent = prefix + current + suffix;
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+    })();
+
+    /* ===========================================
+       SUBSCRIBE FORMS
+       =========================================== */
+    (function initForms() {
+      document.querySelectorAll('.subscribe-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var input = form.querySelector('input[type="email"]');
+          var button = form.querySelector('button');
+          var formId = form.getAttribute('data-form');
+          var errorEl = document.getElementById('error-' + formId);
+          var email = input.value.trim();
+
+          if (!email) return;
+
+          button.disabled = true;
+          button.querySelector('.btn-text').textContent = 'Subscribing...';
+
+          fetch('https://theanthropicstack.substack.com/api/v1/free?noRedirect=true', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+          })
+          .then(function(res) {
+            if (!res.ok) throw new Error('Subscription failed');
+            button.classList.add('success');
+            input.value = '';
+            if (errorEl) { errorEl.classList.remove('visible'); errorEl.textContent = ''; }
+          })
+          .catch(function() {
+            // Fallback: open Substack page
+            if (errorEl) {
+              errorEl.textContent = 'Something went wrong. Redirecting to Substack...';
+              errorEl.classList.add('visible');
+            }
+            setTimeout(function() {
+              window.open('https://theanthropicstack.substack.com/subscribe?email=' + encodeURIComponent(email), '_blank');
+            }, 1000);
+          })
+          .finally(function() {
+            button.disabled = false;
+            if (!button.classList.contains('success')) {
+              button.querySelector('.btn-text').textContent = 'Subscribe — it is free';
+            }
+          });
+        });
+      });
+    })();
+
+    /* ===========================================
+       SMOOTH SCROLL FOR NAV
+       =========================================== */
+    document.querySelector('.nav-subscribe').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('subscribe').scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
