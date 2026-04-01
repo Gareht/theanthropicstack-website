@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# OS
+.DS_Store
+
+# Sensitive files
+proton-recovery-kit.pdf
+*.env
+.env.*

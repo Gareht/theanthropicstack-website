@@ -1,0 +1,41 @@
+---
+import Layout from "../layouts/Layout.astro";
+import DotGrid from "../components/DotGrid.astro";
+import Nav from "../components/Nav.astro";
+import Hero from "../components/Hero.astro";
+import WhatYouGet from "../components/WhatYouGet.astro";
+import Stats from "../components/Stats.astro";
+import WhoReads from "../components/WhoReads.astro";
+import WhyExists from "../components/WhyExists.astro";
+import AboutAuthor from "../components/AboutAuthor.astro";
+import Testimonials from "../components/Testimonials.astro";
+import FAQ from "../components/FAQ.astro";
+import CTA from "../components/CTA.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout
+  title="The Anthropic Stack | AI Newsletter for Developers, Builders and Business Operators"
+  description="The Anthropic Stack delivers three AI newsletter issues per week covering Claude Code, MCP servers, AI agents and automation workflows. Real tools. Real workflows. No hype. Subscribe free."
+>
+  <DotGrid />
+  <Nav />
+  <main>
+    <Hero />
+    <WhatYouGet />
+    <Stats />
+    <WhoReads />
+    <WhyExists />
+    <AboutAuthor />
+    <Testimonials />
+    <FAQ />
+    <CTA />
+  </main>
+  <Footer />
+
+  <!-- Client-side scripts -->
+  <script>
+    import "../scripts/animations.ts";
+    import "../scripts/subscribe.ts";
+  </script>
+</Layout>

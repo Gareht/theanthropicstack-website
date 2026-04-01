@@ -1,0 +1,62 @@
+---
+const audiences = [
+  {
+    label: "SME Owners",
+    description: "Looking to integrate AI into real business operations without the noise.",
+  },
+  {
+    label: "Knowledge Workers",
+    description: "Adopting AI tools and wanting to stay ahead of what actually works.",
+  },
+  {
+    label: "Developers",
+    description: "Building with Claude, MCP, LangChain, CrewAI and the broader AI tooling ecosystem.",
+  },
+  {
+    label: "The AI-curious",
+    description: "Who want a trusted filter on what matters and what does not.",
+  },
+];
+---
+
+<section class="py-28 md:py-36 relative z-1">
+  <div class="mx-auto max-w-[1200px] px-6 md:px-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+      <!-- Left column: heading -->
+      <div class="lg:col-span-4 reveal">
+        <p class="font-mono text-[11px] font-medium text-accent uppercase tracking-[0.25em] mb-5">
+          Who reads this
+        </p>
+        <h2 class="font-display text-[clamp(32px,5vw,56px)] font-medium tracking-tight leading-[1.1] mb-6">
+          Built for<br />people who<br />
+          <span class="text-accent italic">build.</span>
+        </h2>
+      </div>
+
+      <!-- Right column: audience list -->
+      <div class="lg:col-span-8 lg:pt-4">
+        <div class="space-y-0">
+          {
+            audiences.map((a, i) => (
+              <div class="reveal-child audience-item group py-7 border-b border-border transition-all duration-300 hover:pl-4">
+                <div class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6">
+                  <span class="font-mono text-[11px] text-text-tertiary tracking-wider w-6 shrink-0">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 class="font-display text-[22px] font-medium tracking-tight mb-2 group-hover:text-accent transition-colors duration-300">
+                      {a.label}
+                    </h3>
+                    <p class="text-text-secondary text-[15px] leading-relaxed font-light">
+                      {a.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

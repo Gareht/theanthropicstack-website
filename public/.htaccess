@@ -1,0 +1,25 @@
+# Allow POST to subscribe.php (ModSecurity/WAF fix)
+<Files "subscribe.php">
+    <IfModule mod_security2.c>
+        SecRuleEngine Off
+    </IfModule>
+    <IfModule mod_rewrite.c>
+        RewriteEngine Off
+    </IfModule>
+</Files>
+
+# Block directory listing
+Options -Indexes
+
+# Force UTF-8
+AddDefaultCharset UTF-8
+
+# Cache static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 1 hour"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+</IfModule>

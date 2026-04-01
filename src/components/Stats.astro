@@ -1,0 +1,75 @@
+---
+const stats = [
+  { target: 97, suffix: "M+", prefix: "", label: "MCP SDK monthly downloads" },
+  { target: 1, suffix: "B+", prefix: "$", label: "Claude Code annual run rate" },
+  { target: 3, suffix: "x", prefix: "", label: "Issues per week" },
+];
+---
+
+<!-- Horizontal ticker-style stats band -->
+<section class="relative z-1 py-16 overflow-hidden">
+  <div class="section-rule"></div>
+
+  <div class="mx-auto max-w-[1200px] px-6 md:px-10 py-16">
+    <div class="reveal">
+      <div class="grid grid-cols-1 md:grid-cols-3" id="stats-grid">
+        {
+          stats.map((stat, i) => (
+            <div class:list={[
+              "stat-block text-center py-8 md:py-0",
+              i < stats.length - 1 && "md:border-r md:border-border-warm"
+            ]}>
+              <div
+                class="stat-number font-display text-[clamp(56px,10vw,88px)] font-semibold tracking-[-0.03em] text-text leading-none mb-3"
+                data-target={stat.target}
+                data-suffix={stat.suffix}
+                data-prefix={stat.prefix}
+              >
+                <span class="text-accent">{stat.prefix}</span>0<span class="text-accent">{stat.suffix}</span>
+              </div>
+              <p class="text-text-tertiary text-[13px] font-mono tracking-wide uppercase">{stat.label}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="section-rule"></div>
+</section>
+
+<script>
+  function animateCounter(el: HTMLElement) {
+    const target = parseInt(el.dataset.target ?? "0", 10);
+    const prefix = el.dataset.prefix ?? "";
+    const suffix = el.dataset.suffix ?? "";
+    const duration = 2200;
+    const start = performance.now();
+
+    function update(now: number) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      const current = Math.round(eased * target);
+      el.innerHTML = `<span class="text-accent">${prefix}</span>${current}<span class="text-accent">${suffix}</span>`;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  const grid = document.getElementById("stats-grid");
+  if (grid) {
+    let started = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !started) {
+          started = true;
+          grid.querySelectorAll<HTMLElement>(".stat-number").forEach(animateCounter);
+          observer.unobserve(grid);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(grid);
+  }
+</script>

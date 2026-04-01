@@ -1,0 +1,54 @@
+---
+const quotes = [
+  "The only AI newsletter I actually open every time it arrives.",
+  "Finally, someone writing about AI tools for people who use them at work, not just people who talk about them on Twitter.",
+  "Wednesday builds have saved me hours. Practical, tested, no fluff.",
+];
+---
+
+<section class="py-28 md:py-36 relative z-1">
+  <div class="mx-auto max-w-[1200px] px-6 md:px-10">
+    <div class="reveal text-center mb-16">
+      <p class="font-mono text-[11px] font-medium text-accent uppercase tracking-[0.25em] mb-5">
+        What readers say
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {
+        quotes.map((quote, i) => (
+          <div class="reveal-child">
+            <div class:list={[
+              "testimonial-card relative p-8 md:p-10 rounded-2xl border border-border transition-all duration-500 group overflow-hidden",
+              i === 1 && "md:-translate-y-4"
+            ]}>
+              {/* Hover glow */}
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style="background: radial-gradient(ellipse at 50% 0%, oklch(0.68 0.17 45 / 0.05), transparent 60%);"></div>
+
+              {/* Large decorative quote mark */}
+              <div class="font-display text-[80px] leading-none text-accent/10 absolute -top-2 left-6 select-none" aria-hidden="true">
+                &ldquo;
+              </div>
+
+              <blockquote class="relative z-1 font-display italic text-[20px] leading-[1.6] text-text-warm pt-8 tracking-tight">
+                {quote}
+              </blockquote>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .testimonial-card {
+    background: var(--color-bg-warm);
+  }
+
+  .testimonial-card:hover {
+    border-color: var(--color-border-warm);
+    transform: translateY(-3px);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+  }
+</style>

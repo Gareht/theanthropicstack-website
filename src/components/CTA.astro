@@ -1,0 +1,32 @@
+---
+import SubscribeForm from "./SubscribeForm.astro";
+---
+
+<!-- Full-bleed warm gradient CTA -->
+<section class="relative z-1 overflow-hidden">
+  <div class="section-rule"></div>
+
+  <div class="relative py-32 md:py-40">
+    <!-- Background gradient -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background: radial-gradient(ellipse 70% 60% at 50% 50%, oklch(0.68 0.17 45 / 0.06) 0%, transparent 70%);"
+      aria-hidden="true"
+    ></div>
+
+    <div class="relative mx-auto max-w-[1200px] px-6 md:px-10 text-center">
+      <div class="reveal">
+        <h2 class="font-display text-[clamp(40px,7vw,76px)] font-semibold tracking-tight leading-[1.05] mb-10">
+          Stop scrolling.<br />
+          <span class="text-accent italic">Start building.</span>
+        </h2>
+
+        <SubscribeForm id="cta-form" />
+
+        <p class="text-text-tertiary text-[14px] mt-6 font-light tracking-wide">
+          Published every Monday, Wednesday and Friday &middot; Unsubscribe anytime
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

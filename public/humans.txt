@@ -1,0 +1,15 @@
+/* TEAM */
+Editor: Gareth
+Contact: theanthropicstack@proton.me
+Twitter: @northrootsai
+Location: United Kingdom
+
+/* SITE */
+Name: The Anthropic Stack
+URL: https://theanthropicstack.com
+Description: AI newsletter for developers, builders and business operators
+Powered by: North Roots AI (https://northroots.ai)
+Standards: HTML5, CSS3, TypeScript
+Components: Astro, Tailwind CSS v4
+Fonts: Cormorant Garamond, Outfit, IBM Plex Mono
+Software: Claude Code

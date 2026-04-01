@@ -1,0 +1,54 @@
+---
+interface Props {
+  id: string;
+  class?: string;
+  variant?: "default" | "hero";
+}
+
+const { id, class: className = "", variant = "default" } = Astro.props;
+---
+
+<form class:list={["subscribe-form", className]} id={id} data-form={id}>
+  <div class:list={[
+    "flex flex-col sm:flex-row gap-3 sm:gap-0",
+    variant === "hero" ? "max-w-[520px]" : "max-w-[480px] mx-auto"
+  ]}>
+    <input
+      type="email"
+      name="email"
+      placeholder="you@company.com"
+      required
+      autocomplete="email"
+      aria-label="Email address"
+      class="flex-1 px-5 py-4 bg-bg-warm border border-border-warm sm:border-r-0 sm:rounded-l-lg sm:rounded-r-none rounded-lg text-text font-body text-[15px] font-light outline-none transition-all duration-300 placeholder:text-text-tertiary focus:border-accent focus:shadow-[0_0_0_2px_var(--color-accent-glow)]"
+    />
+    <button
+      type="submit"
+      class="subscribe-btn px-7 py-4 bg-accent text-white font-body font-medium text-[15px] border-none sm:rounded-r-lg sm:rounded-l-none rounded-lg cursor-pointer whitespace-nowrap transition-all duration-200 animate-subtle-pulse hover:bg-accent-hover hover:animate-none relative overflow-hidden tracking-wide"
+    >
+      <span class="btn-text">Subscribe Now</span>
+      <span class="checkmark hidden">
+        <svg class="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3">
+          <path class="check-path" d="M4 12l6 6L20 6" />
+        </svg>
+      </span>
+    </button>
+  </div>
+  <p class="form-error hidden text-red-500 text-sm mt-3 font-light"></p>
+</form>
+
+<style>
+  .subscribe-btn.success {
+    background: var(--color-success);
+    animation: none;
+  }
+  .subscribe-btn.success .btn-text { display: none; }
+  .subscribe-btn.success .checkmark { display: inline-block; }
+  .check-path {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+  }
+  .subscribe-btn.success .check-path {
+    animation: draw-check 0.4s 0.1s forwards ease-out;
+  }
+</style>

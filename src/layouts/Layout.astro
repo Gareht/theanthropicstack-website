@@ -1,0 +1,271 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonicalURL = "https://theanthropicstack.com/";
+
+// Schema 1: WebSite
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://theanthropicstack.com/#website",
+  name: "The Anthropic Stack",
+  url: "https://theanthropicstack.com",
+  description:
+    "AI newsletter covering Claude Code, MCP servers, AI agents and automation workflows. Published three times per week.",
+  inLanguage: "en-GB",
+  publisher: { "@id": "https://theanthropicstack.com/#organization" },
+  potentialAction: {
+    "@type": "SubscribeAction",
+    target: "https://theanthropicstack.substack.com",
+    name: "Subscribe to The Anthropic Stack",
+  },
+};
+
+// Schema 2: Organization
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://theanthropicstack.com/#organization",
+  name: "The Anthropic Stack",
+  url: "https://theanthropicstack.com",
+  logo: "https://theanthropicstack.com/icon.svg",
+  description:
+    "The AI newsletter for developers, builders and business operators. Three issues per week covering Claude Code, MCP servers, AI agents and automation workflows.",
+  founder: { "@id": "https://theanthropicstack.com/#person" },
+  sameAs: [
+    "https://theanthropicstack.substack.com",
+    "https://x.com/northrootsai",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "theanthropicstack@proton.me",
+    contactType: "editorial",
+  },
+};
+
+// Schema 3: Person (author — branded as The Anthropic Stack editor, subtle NR backlink)
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://theanthropicstack.com/#person",
+  name: "Gareth",
+  jobTitle: "Editor",
+  url: "https://theanthropicstack.com",
+  description:
+    "Editor of The Anthropic Stack. Writes about AI developer tools from the perspective of someone building production AI systems daily.",
+  sameAs: ["https://x.com/northrootsai", "https://northroots.ai"],
+  knowsAbout: [
+    "Claude Code",
+    "Model Context Protocol",
+    "MCP Servers",
+    "AI Agents",
+    "AI Automation",
+    "Anthropic Claude",
+    "Large Language Models",
+    "AI Developer Tools",
+  ],
+};
+
+// Schema 4: Periodical (newsletter)
+const periodicalSchema = {
+  "@context": "https://schema.org",
+  "@type": "Periodical",
+  "@id": "https://theanthropicstack.com/#periodical",
+  name: "The Anthropic Stack",
+  url: "https://theanthropicstack.substack.com",
+  description:
+    "AI newsletter published three times per week covering Claude Code, MCP servers, AI agents and automation workflows for developers, builders and business operators.",
+  publisher: { "@id": "https://theanthropicstack.com/#organization" },
+  editor: { "@id": "https://theanthropicstack.com/#person" },
+  inLanguage: "en-GB",
+  isAccessibleForFree: true,
+  about: [
+    { "@type": "Thing", name: "Claude Code" },
+    { "@type": "Thing", name: "Model Context Protocol" },
+    { "@type": "Thing", name: "AI Agents" },
+    { "@type": "Thing", name: "AI Automation Workflows" },
+    { "@type": "Thing", name: "AI Developer Tools" },
+  ],
+};
+
+// Schema 5: FAQPage
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Is The Anthropic Stack only about Anthropic and Claude?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. The name reflects where the newsletter started, but coverage spans the full AI landscape. Claude, ChatGPT, Gemini, open source models, automation tools, MCP servers and everything in between. If it matters to people building with AI, it belongs here.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How often does The Anthropic Stack publish?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Three times a week. Monday (The Signal), Wednesday (The Build) and Friday (The Queue). Each issue takes under five minutes to read.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Is The Anthropic Stack newsletter free?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. The core newsletter is free and always will be. A paid tier with deeper analysis and exclusive content is planned for later in 2026.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What makes The Anthropic Stack different from other AI newsletters?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Specificity. Most AI newsletters cover announcements. The Anthropic Stack covers what works. Every issue is written by someone who builds production AI systems daily. The perspective is practical, opinionated and grounded in real usage.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Who writes The Anthropic Stack?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Gareth, founder of North Roots AI, an AI engineering and workflow modernisation consultancy. Gareth builds production AI systems with Claude Code and MCP daily for clients across the UK.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I sponsor The Anthropic Stack?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Sponsorship opportunities open from month four. Reach out to theanthropicstack@proton.me for the media kit.",
+      },
+    },
+  ],
+};
+
+// Schema 6: Speakable (for voice assistants)
+const speakableSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://theanthropicstack.com/#webpage",
+  name: "The Anthropic Stack — AI Newsletter for Developers, Builders and Business Operators",
+  url: "https://theanthropicstack.com",
+  description,
+  isPartOf: { "@id": "https://theanthropicstack.com/#website" },
+  about: { "@id": "https://theanthropicstack.com/#periodical" },
+  speakable: {
+    "@type": "SpeakableSpecification",
+    cssSelector: ["#hero-headline", ".hero-sub", ".hero-desc"],
+  },
+  mainEntity: { "@id": "https://theanthropicstack.com/#periodical" },
+};
+
+const allSchemas = [
+  websiteSchema,
+  orgSchema,
+  personSchema,
+  periodicalSchema,
+  faqSchema,
+  speakableSchema,
+];
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Keywords (still used by some engines and AI crawlers) -->
+    <meta
+      name="keywords"
+      content="AI newsletter, Claude Code newsletter, MCP server newsletter, AI developer newsletter, AI tools newsletter, AI automation newsletter, AI agents newsletter, Anthropic ecosystem, AI workflow newsletter, best AI newsletters 2026, Model Context Protocol, Claude Code, AI developer tools, AI for business"
+    />
+
+    <!-- Author and publisher -->
+    <meta name="author" content="Gareth" />
+    <meta name="publisher" content="The Anthropic Stack" />
+    <meta name="creator" content="Gareth" />
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="The Anthropic Stack | AI Newsletter for Developers, Builders and Business Operators" />
+    <meta
+      property="og:description"
+      content="Three issues a week. Real tools. Real workflows. No hype. The AI newsletter for developers, builders and business operators."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="The Anthropic Stack" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:image" content="https://theanthropicstack.com/theanthropicstack-social.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The Anthropic Stack — The AI newsletter for people who actually use it. Three issues a week." />
+    <meta property="article:author" content="https://theanthropicstack.com" />
+    <meta property="article:publisher" content="https://theanthropicstack.com" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@northrootsai" />
+    <meta name="twitter:creator" content="@northrootsai" />
+    <meta name="twitter:title" content="The Anthropic Stack | AI Newsletter" />
+    <meta
+      name="twitter:description"
+      content="Three issues a week. Real tools. Real workflows. No hype. Subscribe free."
+    />
+    <meta name="twitter:image" content="https://theanthropicstack.com/theanthropicstack-social.png" />
+
+    <!-- Dublin Core (used by academic and AI indexers) -->
+    <meta name="DC.title" content="The Anthropic Stack" />
+    <meta name="DC.creator" content="Gareth" />
+    <meta name="DC.subject" content="AI newsletter, Claude Code, MCP servers, AI agents, automation" />
+    <meta name="DC.description" content={description} />
+    <meta name="DC.publisher" content="The Anthropic Stack" />
+    <meta name="DC.type" content="InteractiveResource" />
+    <meta name="DC.format" content="text/html" />
+    <meta name="DC.language" content="en-GB" />
+
+    <!-- Verification and discovery -->
+    <link rel="author" href="/humans.txt" />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+
+    <!-- Fonts: Cormorant Garamond (display), Outfit (body), IBM Plex Mono (code) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- JSON-LD Structured Data (all schemas) -->
+    {allSchemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  @import "../styles/global.css";
+</style>
