@@ -1,3 +1,11 @@
+# Branded referral redirects. The single source of truth for /railway.
+# Do not add these through the Krystal control panel: its UI appends a trailing
+# slash after the query string, which corrupts the referral code.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^railway/?$ https://railway.com/?referralCode=theanthropicstack [R=301,L]
+</IfModule>
+
 # Allow POST to subscribe.php (ModSecurity/WAF fix)
 <Files "subscribe.php">
     <IfModule mod_security2.c>
