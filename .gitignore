@@ -10,5 +10,7 @@ dist/
 
 # Sensitive files
 proton-recovery-kit.pdf
+.env
 *.env
 .env.*
+!.env.example
