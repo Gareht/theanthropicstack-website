@@ -1,0 +1,177 @@
+---
+import Layout from "../layouts/Layout.astro";
+import DotGrid from "../components/DotGrid.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import SubscribeForm from "../components/SubscribeForm.astro";
+import { tools } from "../data/tools";
+
+const itemListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "@id": "https://theanthropicstack.com/stack#list",
+  name: "The tools behind The Anthropic Stack",
+  description:
+    "The software actually used to build and publish The Anthropic Stack. Agents, infrastructure, web and publishing.",
+  itemListElement: tools.map((tool, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: tool.name,
+    description: tool.summary,
+  })),
+};
+---
+
+<Layout
+  title="The Stack | The Anthropic Stack"
+  description="The tools actually used to build and publish The Anthropic Stack. Claude Code, Railway, Astro and the rest, with honest setup notes and plain disclosure on referral links."
+  ogDescription="The tools I actually run, with honest setup notes. Some are referral links, same price to you."
+  path="/stack"
+  homeSchemas={false}
+  extraSchemas={[itemListSchema]}
+>
+  <DotGrid />
+  <Nav />
+
+  <main>
+    <section class="relative z-1 pt-40 md:pt-48 pb-16">
+      <div class="mx-auto max-w-[880px] px-6 md:px-10">
+        <div class="reveal">
+          <p class="font-mono text-[11px] font-medium text-accent uppercase tracking-[0.25em] mb-5">
+            The stack
+          </p>
+          <h1 class="font-display text-[clamp(40px,7vw,72px)] font-medium tracking-tight leading-[1.05] mb-8">
+            The tools I<br />
+            <span class="text-accent italic">actually</span> run.
+          </h1>
+          <p class="text-text-secondary text-[18px] leading-[1.8] font-light max-w-[560px]">
+            Not a list of everything that exists. The short list that earns its
+            place, with honest setup notes, kept current as the stack changes.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stated before the reader reaches a single link. -->
+    <section class="relative z-1 pb-16">
+      <div class="mx-auto max-w-[880px] px-6 md:px-10">
+        <p class="reveal text-text-tertiary text-[14px] leading-[1.8] font-light max-w-[620px] border-l border-border-warm pl-5">
+          Some of these are referral links, marked as such, disclosed on the line
+          you click. Nothing appears here because of a commission and nothing is
+          written differently because of one. Referral links never appear inside
+          the newsletter reviews themselves. If a tool stops earning its place, it
+          comes off the list.
+        </p>
+      </div>
+    </section>
+
+    <!-- Editorial rows, not cards. -->
+    <section class="relative z-1 pb-28 md:pb-36">
+      <div class="mx-auto max-w-[880px] px-6 md:px-10">
+        <ul class="border-t border-border">
+          {tools.map((tool) => (
+            <li class="reveal-child border-b border-border">
+              <a
+                href={tool.href}
+                target="_blank"
+                rel={tool.disclosure ? "sponsored nofollow noopener" : "noopener"}
+                class="tool-row group relative flex flex-col gap-4 md:flex-row md:items-baseline md:gap-10 py-8 px-4 md:px-6 -mx-4 md:-mx-6 no-underline transition-colors duration-500"
+              >
+                <span class="font-mono text-[11px] text-text-tertiary uppercase tracking-[0.2em] md:w-[130px] md:shrink-0 md:pt-1.5">
+                  {tool.category}
+                </span>
+
+                <span class="flex-1">
+                  <span class="flex items-center gap-3 mb-2">
+                    <span class="font-display text-[27px] font-medium tracking-tight text-text leading-none">
+                      {tool.name}
+                    </span>
+                    {tool.disclosure && <span class="tag-inline">referral</span>}
+                    <svg
+                      class="w-4 h-4 stroke-text-tertiary shrink-0 opacity-0 -translate-x-1 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-0 group-hover:stroke-accent group-focus-visible:opacity-100"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M7 17 17 7M7 7h10v10" />
+                    </svg>
+                  </span>
+
+                  <span class="block text-text-warm text-[15px] font-light leading-[1.7] mb-1.5">
+                    {tool.summary}
+                  </span>
+                  <span class="block text-text-tertiary text-[14px] font-light leading-[1.7]">
+                    {tool.note}
+                  </span>
+
+                  {tool.disclosure && (
+                    <span class="mt-3 flex items-start gap-2.5 text-[13px] font-light leading-[1.6] text-text-tertiary">
+                      <span class="mt-[9px] h-px w-4 shrink-0 bg-accent-muted" aria-hidden="true"></span>
+                      <span>{tool.disclosure}</span>
+                    </span>
+                  )}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="relative z-1 overflow-hidden">
+      <div class="section-rule"></div>
+      <div class="relative py-28 md:py-32">
+        <div
+          class="absolute inset-0 pointer-events-none"
+          style="background: radial-gradient(ellipse 70% 60% at 50% 50%, oklch(0.68 0.17 45 / 0.06) 0%, transparent 70%);"
+          aria-hidden="true"
+        >
+        </div>
+        <div class="relative mx-auto max-w-[880px] px-6 md:px-10 text-center">
+          <div class="reveal">
+            <h2 class="font-display text-[clamp(32px,5vw,52px)] font-medium tracking-tight leading-[1.1] mb-8">
+              These tools, used properly,<br />
+              <span class="text-text-secondary">three times a week.</span>
+            </h2>
+            <SubscribeForm id="stack-form" />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script>
+    import "../scripts/animations.ts";
+    import "../scripts/subscribe.ts";
+  </script>
+</Layout>
+
+<style>
+  .tool-row {
+    border-radius: 12px;
+  }
+
+  .tool-row:hover {
+    background: var(--color-bg-warm);
+  }
+
+  .tag-inline {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--color-accent-muted);
+    background: var(--color-accent-subtle);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+</style>

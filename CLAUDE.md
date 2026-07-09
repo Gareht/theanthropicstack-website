@@ -5,11 +5,25 @@ Static landing page for [The Anthropic Stack](https://theanthropicstack.substack
 ## Structure
 
 ```
-index.html    — Single-file landing page (HTML + CSS + JS, no framework)
-icon.svg      — Logo icon (stacked isometric layers + sparkle, black + orange)
+src/pages/index.astro   — Landing page
+src/pages/stack.astro   — Tools page (the only home for referral links)
+src/data/tools.ts       — Tool list and per-tool disclosures
+src/layouts/Layout.astro — Head, meta, JSON-LD schemas
+src/components/         — Section components
+public/                 — Static assets, robots.txt, sitemap.xml, .htaccess
+index.html              — Legacy single-file version, superseded by the Astro build
 ```
 
-No build step. No dependencies. Open `index.html` in a browser to develop.
+Astro + Tailwind v4, static output, pnpm. `pnpm dev` to develop, `pnpm build` to produce `dist/`.
+
+## Monetisation and Affiliate Links
+
+One principle, non-negotiable: **affiliate links never appear inside editorial picks.** Not in Shiplog entries, not in Stack This Week items, not in tool reviews. The moment a recommendation carries a referral link, every honest recommendation becomes suspect. Referral links live in one disclosed line near the sign-off, or on `/stack`.
+
+- **Branded redirects only.** Never publish a raw referral URL. Routes are declared in `astro.config.mjs` under `redirects`, so a destination can be swapped without editing a published issue or a profile bio. Current: `/railway` to the Railway referral URL. A host-level redirect, if configured, takes precedence over the generated fallback page.
+- **`/stack`** (`src/pages/stack.astro`, data in `src/data/tools.ts`) is the scalable destination. Point at the page, never at a single product.
+- **Disclosure travels with the link.** A tool with a `disclosure` field renders a `referral` tag and its disclosure line on the row itself. Lead with what the reader gains ("You get $20 in credits"), then state the commission plainly. The UK ASA and CMA expect this, and on a no-hype brand it builds trust rather than costing it.
+- Referral anchors carry `rel="sponsored nofollow noopener"`. `/railway` is disallowed in `robots.txt`.
 
 ## Design Conventions
 
@@ -48,6 +62,6 @@ Body: `{ "email": "..." }` as JSON. Fallback redirects to Substack subscribe pag
 
 ## Gotchas
 
-- Git remote still points to `Gareht/Infant-Mind-App.git` — update before pushing
+- Hosted on Krystal (Apache). The `/railway` redirect is configured there, and a host-level rule takes precedence over the `redirects` block in `astro.config.mjs`. Change the referral code in both, or delete the Astro block and keep Krystal as the single source of truth.
 - Hero headline wraps each word in a `.word` span (white-space: nowrap) to prevent mid-word breaks at intermediate viewport widths
 - The icon SVG uses `currentColor` inline in the nav (adapts to white on dark) but fixed dark colours in `icon.svg` (for favicon on light browser tabs)

@@ -3,6 +3,8 @@
 
 User-agent: *
 Allow: /
+# Referral redirects. Not content.
+Disallow: /railway
 
 # AI Crawlers — explicitly welcomed
 User-agent: GPTBot

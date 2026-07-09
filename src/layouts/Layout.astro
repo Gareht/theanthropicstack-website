@@ -2,10 +2,24 @@
 interface Props {
   title: string;
   description: string;
+  /** Root-relative path, used for the canonical and og:url. */
+  path?: string;
+  ogDescription?: string;
+  /** FAQ and speakable schemas only make sense on the home page. */
+  homeSchemas?: boolean;
+  extraSchemas?: Record<string, unknown>[];
 }
 
-const { title, description } = Astro.props;
-const canonicalURL = "https://theanthropicstack.com/";
+const {
+  title,
+  description,
+  path = "/",
+  ogDescription = "Three issues a week. Real tools. Real workflows. No hype. The AI newsletter for developers, builders and business operators.",
+  homeSchemas = true,
+  extraSchemas = [],
+} = Astro.props;
+
+const canonicalURL = `https://theanthropicstack.com${path}`;
 
 // Schema 1: WebSite
 const websiteSchema = {
@@ -170,8 +184,8 @@ const allSchemas = [
   orgSchema,
   personSchema,
   periodicalSchema,
-  faqSchema,
-  speakableSchema,
+  ...(homeSchemas ? [faqSchema, speakableSchema] : []),
+  ...extraSchemas,
 ];
 ---
 
@@ -202,11 +216,8 @@ const allSchemas = [
     <meta name="googlebot" content="index, follow" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="The Anthropic Stack | AI Newsletter for Developers, Builders and Business Operators" />
-    <meta
-      property="og:description"
-      content="Three issues a week. Real tools. Real workflows. No hype. The AI newsletter for developers, builders and business operators."
-    />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={ogDescription} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content="The Anthropic Stack" />
