@@ -18,6 +18,11 @@ The newsletter publishes three issues per week:
 - Developers building with Claude, MCP, LangChain, CrewAI and the broader AI tooling ecosystem
 - Anyone who wants a trusted filter on what matters in AI and what does not
 
+## Pages
+
+- https://theanthropicstack.com/ — Landing page and subscribe form
+- https://theanthropicstack.com/stack — The tools the editor actually runs, with setup notes. Some entries are referral links, each disclosed on the row itself. Referral links never appear inside editorial picks or tool reviews.
+
 ## Key Facts
 
 - Editor: Gareth

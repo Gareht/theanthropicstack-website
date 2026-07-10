@@ -99,6 +99,16 @@ Sponsorship opportunities open from month four of publication. For the media kit
 
 ---
 
+## The Stack Page and Affiliate Disclosure
+
+https://theanthropicstack.com/stack lists the tools the editor actually runs, each with a short setup note.
+
+Some entries are referral links. Every one is labelled "referral" and carries its own disclosure on the same line, stating what the reader gains and that the newsletter earns a commission. Railway, for example, gives new signups $20 in credits.
+
+Referral links never appear inside editorial content: not in tool reviews, not in curated link roundups, not in Monday, Wednesday or Friday issues. They exist only on the stack page and in a single disclosed line near an issue's sign-off. Nothing appears on that page because of a commission, and no recommendation is written differently because of one.
+
+---
+
 ## Frequently Asked Questions
 
 **Is The Anthropic Stack only about Anthropic and Claude?**
